@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { VFXImg } from 'react-vfx';
 
 export const Uploader = () => {
-  const maxWidth = 1920;
-  const maxHeight = 1080;
+  const [imageSrc, setImageSrc] = useState('');
   const onChangeImage = (input: HTMLInputElement) => {
+    const maxWidth = 700;
+    const maxHeight = 500;
     const files = input.files!;
     const file = files[0];
     if (file.type != 'image/jpeg' && file.type != 'image/png') {
@@ -27,27 +29,30 @@ export const Uploader = () => {
         if (imageWidth > imageHeight) {
           const ratio = image.height / image.width;
           canvasWidth = maxWidth;
-          canvasHeight = maxWidth * ratio;
+          canvasHeight = Math.floor(maxWidth * ratio);
         } else {
           const ratio = image.width / image.height;
-          canvasWidth = maxHeight * ratio;
+          canvasWidth = Math.floor(maxHeight * ratio);
           canvasHeight = maxHeight;
         }
-        canvas.width = imageWidth;
-        canvas.height = imageHeight;
+        canvas.width = canvasWidth;
+        canvas.height = canvasHeight;
         ctx.drawImage(image, 0, 0, imageWidth, imageHeight, 0, 0, canvasWidth, canvasHeight);
         const readResult = reader.result as string;
         image.src = readResult;
       };
     };
     reader.readAsDataURL(file);
+    const resizedImage = canvas.toDataURL();
+    setImageSrc(resizedImage);
   };
   return (
     <div>
       <form id="img-form">
         <input type="file" id="img-input" onChange={(e) => onChangeImage(e.target)} />
       </form>
-      <canvas id="area"></canvas>
+      <canvas id="area" hidden></canvas>
+      <VFXImg src={imageSrc} shader="glitch" />
     </div>
   );
 };
