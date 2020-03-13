@@ -1,6 +1,8 @@
 import React from 'react';
 
 export const Uploader = () => {
+  const maxWidth = 1920;
+  const maxHeight = 1080;
   const onChangeImage = (input: HTMLInputElement) => {
     const files = input.files!;
     const file = files[0];
@@ -21,9 +23,19 @@ export const Uploader = () => {
       image.onload = () => {
         const imageWidth = image.width;
         const imageHeight = image.height;
+        let canvasWidth, canvasHeight;
+        if (imageWidth > imageHeight) {
+          const ratio = image.height / image.width;
+          canvasWidth = maxWidth;
+          canvasHeight = maxWidth * ratio;
+        } else {
+          const ratio = image.width / image.height;
+          canvasWidth = maxHeight * ratio;
+          canvasHeight = maxHeight;
+        }
         canvas.width = imageWidth;
         canvas.height = imageHeight;
-        ctx.drawImage(image, 0, 0, imageWidth, imageHeight, 0, 0, imageWidth, imageHeight);
+        ctx.drawImage(image, 0, 0, imageWidth, imageHeight, 0, 0, canvasWidth, canvasHeight);
         const readResult = reader.result as string;
         image.src = readResult;
       };
