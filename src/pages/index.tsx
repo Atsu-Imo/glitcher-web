@@ -1,3 +1,4 @@
 import React from 'react';
+import { Uploader } from './components/uploader/Uploader';
 
-export default () => <div>Hello world!</div>;
+export default () => <Uploader />;
